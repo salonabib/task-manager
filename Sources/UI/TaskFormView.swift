@@ -71,20 +71,6 @@ public struct TaskFormView: View {
                         Text("Title")
                             .font(.headline)
                             .fontWeight(.medium)
-                        // Native text field test
-                        NativeTextField(text: $title, placeholder: "Enter task title")
-                            .frame(height: 30)
-                            .padding(8)
-                            .background(Color.green.opacity(0.3))
-                        
-                        // Simple test text field
-                        TextField("Test input", text: $title)
-                            .textFieldStyle(PlainTextFieldStyle())
-                            .padding(8)
-                            .background(Color.yellow.opacity(0.3))
-                            .focused($focusedField, equals: .title)
-                        
-                        // Original styled text field
                         TextField("Enter task title", text: $title)
                             .foregroundColor(.black)
                             .textFieldStyle(PlainTextFieldStyle())
@@ -95,10 +81,6 @@ public struct TaskFormView: View {
                                     .stroke(Color.black, lineWidth: 1)
                             )
                             .focused($focusedField, equals: .title)
-                            .onTapGesture {
-                                focusedField = .title
-                                NSApp.activate(ignoringOtherApps: true)
-                            }
                     }
                     
                     // Description Section
@@ -300,48 +282,5 @@ public extension TaskFormView {
             onSave: { onSave(newTask) },
             onCancel: onCancel
         )
-    }
-}
-
-// Native text field wrapper
-struct NativeTextField: NSViewRepresentable {
-    @Binding var text: String
-    let placeholder: String
-    
-    func makeNSView(context: Context) -> NSTextField {
-        let textField = NSTextField()
-        textField.placeholderString = placeholder
-        textField.stringValue = text
-        textField.delegate = context.coordinator
-        textField.isEditable = true
-        textField.isSelectable = true
-        textField.backgroundColor = NSColor.white
-        textField.textColor = NSColor.black
-        textField.bezelStyle = .roundedBezel
-        return textField
-    }
-    
-    func updateNSView(_ nsView: NSTextField, context: Context) {
-        if nsView.stringValue != text {
-            nsView.stringValue = text
-        }
-    }
-    
-    func makeCoordinator() -> Coordinator {
-        Coordinator(self)
-    }
-    
-    class Coordinator: NSObject, NSTextFieldDelegate {
-        var parent: NativeTextField
-        
-        init(_ parent: NativeTextField) {
-            self.parent = parent
-        }
-        
-        func controlTextDidChange(_ obj: Notification) {
-            if let textField = obj.object as? NSTextField {
-                parent.text = textField.stringValue
-            }
-        }
     }
 } 
